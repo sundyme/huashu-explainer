@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%230A0B0F%27/%3E%3Cpath d=%27M50 32 14 12l12 20-12 20z%27 fill=%27none%27 stroke=%27%2358C4DD%27 stroke-width=%274%27/%3E%3Cpath d=%27M20 46 44 18%27 stroke=%27%23FFE066%27 stroke-width=%275%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<meta property="og:title" content="huashu-art-motion 原理图解">
+<meta property="og:description" content="AI 不是在生成视频，而是在一帧一帧画视频：用交互动画讲清 huashu-art-motion skill 的原理，附 2026 菲尔兹奖讲解视频案例。">
+<meta property="og:image" content="https://sundyme.github.io/huashu-explainer/media/fields-poster.jpg">
 <meta name="description" content="用可拖动的动画和交互示意图，给零基础读者讲清 huashu-art-motion skill 的工作原理。">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>huashu-art-motion 原理图解</title>
@@ -226,6 +230,25 @@ details.rule .b{padding:0 16px 14px 38px;font-size:15px;color:var(--mute);displa
 .bar .num{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;font-size:13px}
 @media (max-width:520px){.bar{grid-template-columns:1fr 3.6em}.bar .tr{grid-column:1/-1;grid-row:2}}
 
+/* 案例 */
+.case-video{background:var(--stage);border-radius:12px;overflow:hidden;box-shadow:0 1px 0 var(--line)}
+.case-video video{display:block;width:100%;height:auto;aspect-ratio:16/9;max-width:100%;background:#000}
+.chap{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.chap button{flex:none;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 12px;cursor:pointer;font-size:13.5px;white-space:nowrap}
+.chap button b{font-family:var(--mono);font-weight:600;color:var(--mute);margin-right:6px;font-variant-numeric:tabular-nums}
+.chap button[aria-current=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chap button[aria-current=true] b{color:var(--yellow)}
+.spots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
+.spot{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;display:grid;gap:6px;align-content:start}
+.spot .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.spot .ts{font-family:var(--mono);font-size:12.5px;border:1px solid var(--line);border-radius:6px;padding:2px 8px;background:var(--paper);cursor:pointer;color:var(--ink);font-variant-numeric:tabular-nums}
+.spot .ts:hover{border-color:var(--yellow)}
+.spot b{font-size:15px}
+.spot p{font-size:14px;color:var(--mute)}
+.spot a{font-size:13px}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:15px;background:var(--ink);color:var(--paper);border-radius:99px;padding:8px 16px;justify-self:start}
+.hero-cta:hover{opacity:.9}
+.dirs-img{display:block;width:100%;height:auto;border-radius:10px;max-width:100%}
 /* 术语 */
 .gl{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
 .gl div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--card);display:grid;gap:4px}
@@ -240,7 +263,7 @@ footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-si
 </style>
 
 <nav class="toc" aria-label="章节"><div class="in" id="toc">
-  <a href="#s1"><b>1</b>一句话</a><a href="#s2"><b>2</b>工作室比喻</a><a href="#s3"><b>3</b>全景图</a><a href="#s4"><b>4</b>一帧的诞生</a><a href="#s5"><b>5</b>确定性</a><a href="#s6"><b>6</b>缓动</a><a href="#s7"><b>7</b>声画同步</a><a href="#s8"><b>8</b>三方向硬门</a><a href="#s9"><b>9</b>审美写成参数</a><a href="#s10"><b>10</b>规矩与自由</a><a href="#s11"><b>11</b>质检两道关</a><a href="#s12"><b>12</b>经验回流</a><a href="#s13"><b>13</b>实战复盘</a><a href="#s14"><b>14</b>局限</a><a href="#s15"><b>15</b>术语表</a>
+  <a href="#s1"><b>1</b>一句话</a><a href="#case"><b>▶</b>案例成片</a><a href="#s2"><b>2</b>工作室比喻</a><a href="#s3"><b>3</b>全景图</a><a href="#s4"><b>4</b>一帧的诞生</a><a href="#s5"><b>5</b>确定性</a><a href="#s6"><b>6</b>缓动</a><a href="#s7"><b>7</b>声画同步</a><a href="#s8"><b>8</b>三方向硬门</a><a href="#s9"><b>9</b>审美写成参数</a><a href="#s10"><b>10</b>规矩与自由</a><a href="#s11"><b>11</b>质检两道关</a><a href="#s12"><b>12</b>经验回流</a><a href="#s13"><b>13</b>实战复盘</a><a href="#s14"><b>14</b>局限</a><a href="#s15"><b>15</b>术语表</a>
 </div></nav>
 
 <div class="wrap">
@@ -251,7 +274,8 @@ footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-si
     <div style="display:grid;gap:18px">
       <h1>它不"生成"视频，<br>它一帧一帧地<mark>画</mark>视频。</h1>
       <p class="lede">这个 skill 让 AI 像一间动画工作室那样干活：先写稿、定风格，再用代码把每一帧画出来，最后交给独立的"审片员"挑错。右边这个画面就是用同样的原理实时画出来的，拖动滑块试试。</p>
-      <p class="mute" style="font-size:15px">本页以 2026 菲尔兹奖讲解视频（5 分 10 秒，3Blue1Brown 黑底风格）为实例。不需要懂编程，遇到生词可以直接跳到最后的<a href="#s15">术语表</a>。</p>
+      <p class="mute" style="font-size:15px">本页以 2026 菲尔兹奖讲解视频（5 分 10 秒，3Blue1Brown 黑底风格）为实例，成片就在下面，可以边看边对照原理。不需要懂编程，遇到生词可以直接跳到最后的<a href="#s15">术语表</a>。</p>
+      <a class="hero-cta" href="#case">▶ 先看成片</a>
     </div>
     <div style="display:grid;gap:10px">
       <div class="stage"><canvas id="hero" width="640" height="360" aria-label="一根针在三尖瓣曲线内掉头的动画"></canvas></div>
@@ -264,12 +288,34 @@ footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-si
     </div>
   </div>
   <div class="facts">
-    <div><strong>67 行</strong><span>总入口 SKILL.md，只做"指路"</span></div>
+    <div><strong>67 行</strong><span>总入口 SKILL.md：先指路，再立几条底线</span></div>
     <div><strong>12 篇</strong><span>参考手册 references，按任务查阅</span></div>
     <div><strong>35 + 9</strong><span>风格配方 35 种，动画语法卡 9 张</span></div>
     <div><strong>34+ 条</strong><span>带证据的正面经验，持续回流</span></div>
   </div>
 </header>
+
+<!-- 案例 -->
+<section id="case">
+  <div class="eyebrow"><b>▶</b> · 案例 · 先看成片</div>
+  <h2>2026 菲尔兹奖：四位数学家，到底解决了什么？</h2>
+  <div class="prose"><p>这条 5 分 10 秒的讲解视频，从调研到定稿用 huashu-art-motion 做了约 1 小时 15 分钟。画面里的公式、曲线、小球和星空全部是代码画的，配音是逐句合成的 AI 中文男声，配乐也是代码合成的。下面的章节可以直接跳转；「边看边找原理」里每一条都连到本页对应的讲解。</p></div>
+  <div class="case-video">
+    <video id="caseVideo" controls preload="metadata" playsinline poster="media/fields-poster.jpg">
+      <source src="media/fields-2026.mp4" type="video/mp4">
+      你的浏览器无法播放这段视频，可以<a href="media/fields-2026.mp4">直接打开视频文件</a>。
+    </video>
+  </div>
+  <div class="chap" id="chap" role="group" aria-label="视频章节"></div>
+  <p class="cap">网页版为 720p 压缩版（约 16MB）。配音为 AI 合成（MiniMax 语音），字幕烧录在画面中，部分画面为示意并已在画面中标注。</p>
+  <h3 style="margin-top:8px">边看边找原理</h3>
+  <div class="spots" id="spots"></div>
+  <h3 style="margin-top:8px">开工前的三张样帧</h3>
+  <figure style="margin:0;display:grid;gap:8px">
+    <img class="dirs-img" src="media/fields-dirs.jpg" alt="同一帧挂谷针画面的三种风格：黑底数学、黑板粉笔、阿基米德手稿" loading="lazy" width="1600" height="300">
+    <figcaption class="cap">三方向硬门：同一帧画成黑底数学（左，选定）、黑板粉笔（中）、阿基米德手稿（右）三种风格，挑定之后才开始做整片。原因见<a href="#s8">第 8 节</a>。</figcaption>
+  </figure>
+</section>
 
 <!-- 2 比喻 -->
 <section id="s2">
@@ -334,7 +380,7 @@ footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-si
   <div class="eyebrow"><b>4</b> · 核心原理</div>
   <h2>一帧画面是怎么诞生的</h2>
   <div class="prose">
-    <p>视频就是一秒钟连续放 30 张图。这个 skill 的做法是：写一个函数，你给它一个时刻 <code>t</code>，它就画出那一刻的那张图。要做一条 5 分钟的片子，就把 t 从 0 秒一路喂到 300 秒，每隔 1/30 秒拍一张，一共 9000 张，再拼起来。</p>
+    <p>视频就是一张张图连续快放，这条菲尔兹奖视频每秒 30 张。这个 skill 的做法是：写一个函数，你给它一个时刻 <code>t</code>，它就画出那一刻的那张图。要做一条 5 分钟的片子，就把 t 从 0 秒一路喂到 300 秒，每隔 1/30 秒拍一张，一共 9000 张，再拼起来。</p>
     <p>下面是一个缩小版的引擎：两个段落，中间有 0.8 秒转场。拖动时间，右侧会显示引擎在这一刻做的每一步计算。拖到 4.0 到 4.8 秒之间，能看到新旧两段同时被画进两块"离屏画布"，再叠在一起。</p>
   </div>
   <div class="stage"><canvas id="eng" width="640" height="360" aria-label="迷你引擎渲染结果"></canvas></div>
@@ -487,7 +533,7 @@ SCENES[<span class="s">'s02'</span>] = {
     <div style="display:grid;gap:10px">
       <h3>窄桥：五条硬规矩</h3>
       <div class="rules">
-        <details class="rule"><summary><b>画面必须一直在动</b></summary><div class="b"><p>静止超过一两秒，观众就会觉得"卡了"。qa.py 会测每帧的运动面积，找出静止的帧对。</p><p>本片例子：审片发现人物卡停了约 3 秒，于是加了缓慢推镜。</p></div></details>
+        <details class="rule"><summary><b>每一幕都要有东西在动</b></summary><div class="b"><p>每一幕至少有一个主动作加几个小循环，不能放成 PPT；讲道理时也会让镜头慢慢推。具体动多少按语法定，故事类语法允许在笑点上定住。qa.py 会测每帧的运动面积，找出静止的帧对。</p><p>本片例子：审片发现人物卡停了约 3 秒，于是加了缓慢推镜。</p></div></details>
         <details class="rule"><summary><b>所有随机都用种子</b></summary><div class="b"><p>保证同一帧永远渲出同一张图，才能局部重渲、前后对比。见第 5 节。</p></div></details>
         <details class="rule"><summary><b>三方向硬门，指定风格也不豁免</b></summary><div class="b"><p>用户脑中的"3b1b 风格"和 AI 理解的可能不同，三张样帧摆在一起，分歧当场暴露。见第 8 节。</p></div></details>
         <details class="rule"><summary><b>交付前派独立 agent 审片</b></summary><div class="b"><p>写代码的 AI 会"脑补"自己想表达的效果，看不出问题。换一个没参与制作的 agent，只看截图和事实，才挑得出错。见第 11 节。</p></div></details>
@@ -554,7 +600,7 @@ SCENES[<span class="s">'s02'</span>] = {
 <section id="s13">
   <div class="eyebrow"><b>13</b> · 实例</div>
   <h2>菲尔兹奖视频是怎么一步步做出来的</h2>
-  <div class="prose"><p>按实际顺序排列。点每一步，看做了什么、为什么这样做、遇到了什么坑。</p></div>
+  <div class="prose"><p>按实际顺序排列。点每一步，看做了什么、为什么这样做、遇到了什么坑。成片见页首的<a href="#case">案例</a>。</p></div>
   <div class="pipe" id="pipe" role="group" aria-label="制作步骤"></div>
   <div class="panel pipe-d" id="pipeD" aria-live="polite"></div>
 
@@ -594,7 +640,7 @@ SCENES[<span class="s">'s02'</span>] = {
   <h3>可以带走的六条原则</h3>
   <div class="prose" style="font-size:15.5px">
     <p>就算不做视频，这几条思路在别的 AI 工作流里同样适用：</p>
-    <p><b>1. 入口只做路由。</b>总说明保持简短，细节按需查，AI 不会被无关信息淹没。</p>
+    <p><b>1. 入口只放路由和底线。</b>总说明保持简短，细节按需查，AI 不会被无关信息淹没。</p>
     <p><b>2. 把审美写成参数。</b>能写成数字和规则的，就不要只写形容词。</p>
     <p><b>3. 输出用纯函数生成。</b>同样的输入永远得到同样的结果，才能比较、才能局部修改。</p>
     <p><b>4. 在最贵的决定前设硬门。</b>花几分钟出样稿，省下返工几小时。</p>
@@ -682,7 +728,7 @@ function renderHero() { drawHero(heroC, heroT); $('heroT').value = heroT; $('her
 
 /* ---------- 2 工作室角色 ---------- */
 const ROLES = [
-  { k: '导演手册', f: 'SKILL.md', what: '67 行的总入口。它不教具体怎么画，只判断你要做的是哪类片子（短片、口播整片、长卷、角色片……），然后告诉 AI 该去读哪几本手册。', why: '如果把所有知识塞进一个文件，AI 每次都要读完几万字，既慢又容易抓不住重点。只做路由，用到哪本读哪本。', ex: '本片被识别为"口播整片"，于是读了 06、09、12 号手册和 3b1b 语法卡。' },
+  { k: '导演手册', f: 'SKILL.md', what: '67 行的总入口。它不教具体怎么画：先判断你要做的是哪类片子（短片、口播整片、长卷、角色片……），告诉 AI 该去读哪几本手册，再列出几条无论做什么都不能破的规矩。', why: '如果把所有知识塞进一个文件，AI 每次都要读完几万字，既慢又容易抓不住重点。入口只放路由和底线，用到哪本读哪本。', ex: '本片被识别为"口播整片"，于是读了 06、09、12 号手册和 3b1b 语法卡。' },
   { k: '参考手册', f: 'references/01–12', what: '12 本专题手册：拆解方法、五层机制、一帧先行、纯代码绘制、节奏配乐、口播草案、正面经验、风格作者规范、动画语法、角色、长卷、口播整片。', why: '每本只讲一件事，路由表按需指过来。', ex: '12 号手册规定了口播整片的完整流程和经验回流。' },
   { k: '风格样本册', f: '风格配方/ ×35', what: '35 种视觉风格的配方，每种写清配色、笔触、构图、标志性元素。', why: '让"换个风格"变成"换一张配方卡"，而不是从零想象。', ex: '三方向样帧里的黑板粉笔、羊皮纸手稿，都是从配方出发画的。' },
   { k: '镜头语法卡', f: '动画语法/ ×9', what: '9 张卡，每张描述一种视频的"动画语言"：用什么缓动、怎么写字、怎么转场、颜色怎么用。还规定了片段接口，方便复用。', why: '风格管"长什么样"，语法管"怎么动"。', ex: '本片用 3b1b 卡：纯黑底、饱和度 ×1.5、smooth 缓动、先描边后填色。' },
@@ -997,6 +1043,27 @@ const GL = [
 ];
 function renderGl() { const q = $('q').value.trim().toLowerCase(); $('gl').innerHTML = GL.filter(([a, b]) => !q || (a + b).toLowerCase().includes(q)).map(([a, b]) => `<div><b>${a}</b><span>${b}</span></div>`).join('') || '<p class="mute">没有匹配的术语，换个词试试。</p>'; }
 $('q').oninput = renderGl; renderGl();
+
+/* ---------- 案例：章节跳转＋看点 ---------- */
+const CV = $('caseVideo');
+const CHAP = [[0, '开场'], [27, '菲尔兹奖是什么'], [43, '王虹 · 挂谷问题'], [108, '邓煜 · 从碰撞到气体'], [175, 'Tsimerman · 星星与曲线'], [227, 'Pardon · 纽结与数曲线'], [277, '结尾']];
+const mmss = t => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+const seek = t => { try { CV.currentTime = t; const pr = CV.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {} CV.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); };
+$('chap').innerHTML = CHAP.map(([t, n], i) => `<button type="button" data-t="${t}" aria-current="${i === 0}"><b>${mmss(t)}</b>${n}</button>`).join('');
+$('chap').addEventListener('click', e => { const b = e.target.closest('button'); if (b) seek(+b.dataset.t); });
+CV.addEventListener('timeupdate', () => { const t = CV.currentTime; let k = 0; CHAP.forEach(([ct], i) => { if (t >= ct) k = i; }); [...$('chap').children].forEach((b, i) => b.setAttribute('aria-current', i === k)); });
+const SPOTS = [
+  [8, '开场四个图标依次入场', '每个动作都按 smooth 曲线走：起步慢、中间快、结尾稳稳停住。', 's6', '缓动'],
+  [30, '字幕和画面动作对得上', '配音逐句合成、量出每句时长，画面动作挂在「第几句开口」上，不写死秒数。', 's7', '声画同步'],
+  [66, '「答案：可以任意小」', '演示面积越切越小。第一版没跑到底，审片后加到 32 份并显示「→ 0」。', 's11', '质检两道关'],
+  [125, '一盒稀薄气体里的小球', '小球位置来自固定种子，同一秒渲两次一模一样，才能放心局部重渲。', 's5', '确定性'],
+  [175, '段落之间的转场', '每段之间是 0.8 秒的淡入平移：引擎把新旧两段各画一遍，再按转场规则叠起来。', 's4', '一帧的诞生'],
+  [190, '星空里的特殊点', '星空缓慢漂移是画面审片后加的：每一幕都要有东西在动，不能放成 PPT。', 's10', '规矩与自由'],
+  [250, '纽结上的两种距离', '黄色＝空间距离，青色＝沿绳距离。一个颜色只代表一个概念，全片不换。', 's9', '审美写成参数'],
+  [290, '「2,100+」联名计数', '审片发现计数和上一组标签叠在一起，于是推迟了它出现的时间。', 's11', '质检两道关'],
+];
+$('spots').innerHTML = SPOTS.map(([t, h, d, sec, sn]) => `<div class="spot"><div class="row"><button class="ts" type="button" data-t="${t}">▶ ${mmss(t)}</button><b>${h}</b></div><p>${d}</p><a href="#${sec}">对应原理：${sn} →</a></div>`).join('');
+$('spots').addEventListener('click', e => { const b = e.target.closest('.ts'); if (b) seek(+b.dataset.t); });
 
 /* ---------- 章节高亮 ---------- */
 const links = [...document.querySelectorAll('#toc a')];
